@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fasal Sathi — the wand that speaks to farmers</title>
+<meta name="description" content="Fasal Sathi is a handheld wand that reads the soil, sees the crop and speaks the answer aloud in Hindi, in about a minute, in the field. Overall Winner, Bharat Innovation Challenge 2025–26.">
+<meta name="theme-color" content="#07080a">
+<link rel="icon" href="img/favicon.png">
+<link rel="preload" href="fonts/Syne.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="css/site.css">
+<script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/addons/" } }</script>
+</head>
+<body>
+
+<!-- loader -->
+<div id="loader" aria-hidden="true">
+  <div class="ld-in">
+    <div class="ld-top mono"><span>FASAL SATHI · SOIL INTELLIGENCE</span><span id="ldPct">000</span></div>
+    <div class="ld-word">Calibrating<em>&nbsp;the probe</em></div>
+    <div class="ld-bar"><i></i></div>
+    <div class="ld-log mono" id="ldLog">MODBUS RTU · 4800 BAUD · SLAVE 01</div>
+  </div>
+</div>
+
+<!-- the 3D layer sits above the page, so the wand passes in front of the type -->
+<canvas id="world" aria-hidden="true"></canvas>
+<div id="labels" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- viewfinder HUD -->
+<div id="hud" aria-hidden="true">
+  <i class="vf tl"></i><i class="vf tr"></i><i class="vf bl"></i><i class="vf br"></i>
+  <div class="hud-l mono"><span>30.3165° N</span><span>78.0322° E</span><span>DEHRADUN · UK</span></div>
+  <div class="hud-r mono"><span id="hudCh">00 / START</span><span id="hudT">T+00.0 s</span></div>
+  <div class="hud-rail"><i id="hudBar"></i></div>
+</div>
+
+<header class="nav">
+  <a class="brand" href="#top" data-magnet><span class="dot"></span>FASAL SATHI<span class="hi">फसल साथी</span></a>
+  <nav class="links mono">
+    <a href="#soil">Soil</a><a href="#eye">Eye</a><a href="#voice">Voice</a><a href="#inside">Inside</a><a href="#win">Win</a>
+  </nav>
+  <a class="pill" href="https://drive.google.com/file/d/11JI3mxEhYoAo54mF34mX8CPzfkzJrtnX/view" target="_blank" rel="noopener" data-magnet><span class="rec"></span>Watch it work</a>
+</header>
+
+<main id="top">
+
+<!-- 00 HERO -->
+<section class="ch hero" data-ch="hero" data-name="START" data-bg="#07080a">
+  <div class="hero-word" aria-label="Fasal Sathi"><span class="hw hw1">FASAL</span><span class="hw hw2">SATHI</span></div>
+  <div class="hero-meta">
+    <p class="eyebrow mono">Agriculture &amp; Rural Development · CBSE Skill Expo 2026–27</p>
+    <p class="hero-hi">फसल साथी</p>
+  </div>
+  <div class="hero-foot">
+    <p class="lead" data-split>A wand that reads the soil, sees the crop, and speaks the answer aloud. In Hindi. In about a minute. Standing in the field.</p>
+    <div class="badge"><span class="star">✦</span><span><b>Overall Winner</b><br>Bharat Innovation Challenge 2025–26</span></div>
+  </div>
+  <div class="cue mono"><span>Scroll to push it in</span><i></i></div>
+</section>
+
+<!-- 01 PROBLEM -->
+<section class="ch pin problem" data-ch="problem" data-name="PROBLEM" data-bg="#07080a" style="--len:340vh">
+  <div class="stick">
+    <p class="kicker mono">The problem · one soil test</p>
+    <div class="kin">
+      <span class="k k1">₹500.</span>
+      <span class="k k2">Seven days.</span>
+      <span class="k k3">In English.</span>
+    </div>
+    <div class="kin-after">
+      <p class="big">That is one soil test.<br><span class="dim">So most farmers simply guess.</span></p>
+      <div class="stat86"><span class="n" data-count="86">0</span><span class="pc">%</span><p>of Indian farmers work less than two hectares. For them the fee, the wait and the English are each a wall.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 SOIL -->
+<section class="ch pin soil" id="soil" data-ch="soil" data-name="SOIL" data-bg="#0b0805" style="--len:420vh">
+  <div class="stick">
+    <div class="soil-head">
+      <p class="kicker mono">Soil channel · RS-485 / Modbus</p>
+      <h2 class="h2" data-split>One button.<br>Eleven seconds.</h2>
+    </div>
+    <div class="timer mono"><span id="tSec">00.0</span><small>s</small></div>
+    <div class="reads">
+      <div class="rd" data-r="0"><span class="mono">Moisture</span><b><i data-to="27.4" data-d="1">0.0</i><small>%</small></b></div>
+      <div class="rd" data-r="1"><span class="mono">Temperature</span><b><i data-to="26.7" data-d="1">0.0</i><small>°C</small></b></div>
+      <div class="rd" data-r="2"><span class="mono">Conductivity</span><b><i data-to="98" data-d="0">0</i><small>µS/cm</small></b></div>
+      <div class="rd" data-r="3"><span class="mono">pH</span><b><i data-to="8.8" data-d="1">0.0</i></b></div>
+      <div class="rd est" data-r="4"><span class="mono">N · P · K <em>EST</em></span><b>40 · 5 · 30<small>mg/kg</small></b></div>
+    </div>
+    <p class="soil-note mono">First reading in real ground · 23 Aug 2026 · unedited<br><span>N-P-K are estimated from conductivity, and the wand labels them EST. It never quotes a dose from a guess.</span></p>
+  </div>
+</section>
+
+<!-- 03 EYE -->
+<section class="ch pin eye" id="eye" data-ch="eye" data-name="EYE" data-bg="#050a08" style="--len:320vh">
+  <div class="stick">
+    <div class="eye-copy">
+      <p class="kicker mono">Eye channel · USB camera</p>
+      <h2 class="h2" data-split>It looks at the crop. And finds what is wrong.</h2>
+      <ul class="chips">
+        <li><span class="mono">01</span>Names the crop from one photo</li>
+        <li><span class="mono">02</span>Checks the leaf for disease and pests</li>
+        <li><span class="mono">03</span>Blurred? It asks for another shot</li>
+        <li><span class="mono">04</span>Wrong name? Just say it aloud</li>
+      </ul>
+    </div>
+    <div class="idcard mono" id="idcard">
+      <div class="idrow"><span>CROP</span><b>TOMATO</b></div>
+      <div class="idbar"><i></i></div>
+      <div class="idrow"><span>CONFIDENCE</span><b><i data-to="87" data-d="0">0</i>%</b></div>
+      <div class="idrow"><span>LEAF</span><b class="flag">SPOTS FLAGGED</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 VOICE -->
+<section class="ch pin voice" id="voice" data-ch="voice" data-name="VOICE" data-bg="#ff9a2e" data-fg="#120c06" style="--len:380vh">
+  <div class="stick">
+    <p class="kicker mono">Voice channel · Hindi speech</p>
+    <h2 class="h2 voice-h">It doesn’t show you numbers.<br><span>It tells you what to do.</span></h2>
+    <div class="say">
+      <div class="tabs mono"><span class="on">अभी · Now</span><span>ज़मीन · Land</span><span>फसल · Crops</span></div>
+      <div class="lines">
+        <div class="line on"><p class="dev">प्रति एकड़ 100 किलो चूना डालें।</p><p class="gl">Apply 100 kg of lime per acre.</p></div>
+        <div class="line"><p class="dev">हर साल 4–5 टन गोबर की खाद। फसल अवशेष जलाएं नहीं।</p><p class="gl">4–5 tonnes of farmyard manure a year. Never burn crop residue.</p></div>
+        <div class="line"><p class="dev">इस मिट्टी में बाजरा, ज्वार और आलू अच्छे रहेंगे।</p><p class="gl">Millet, sorghum and potato will do well in this soil.</p></div>
+      </div>
+      <div class="wave" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 BRAIN -->
+<section class="ch brain" data-ch="brain" data-name="THINKING" data-bg="#07080a">
+  <p class="kicker mono">Core · on-device rules</p>
+  <h2 class="h2 wide" data-split>The thinking happens on the wand. Not in the cloud.</h2>
+  <div class="steps">
+    <article class="step"><span class="no mono">SEES</span><h3>A photograph</h3><p>names the crop and finds disease on the leaf.</p></article>
+    <article class="step hot"><span class="no mono">DECIDES</span><h3>Rules on the device</h3><p>turn the reading into a diagnosis and a dose per acre. No internet needed.</p></article>
+    <article class="step"><span class="no mono">SPEAKS</span><h3>A language model</h3><p>only phrases that finished conclusion, warmly, in Hindi.</p></article>
+  </div>
+  <div class="ladder">
+    <p class="mono">If the signal drops, it falls down a ladder. The advice survives every rung.</p>
+    <ol class="mono">
+      <li><b>0</b>On-device rules<em>never fails</em></li>
+      <li><b>1</b>Gemini<em>warm Hindi, ~2 s</em></li>
+      <li><b>2</b>OpenRouter<em>another provider</em></li>
+      <li><b>3</b>Spoken English<em>still the fix</em></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 06 INSIDE -->
+<section class="ch pin inside" id="inside" data-ch="inside" data-name="INSIDE" data-bg="#ebe7de" data-fg="#0d0f12" style="--len:420vh">
+  <div class="stick">
+    <p class="kicker mono">Teardown · 9 parts</p>
+    <h2 class="h2 in-h" data-split>Everything inside it.</h2>
+    <p class="in-sub">Every part is off the shelf. The body is printed in sections, so one cracked piece can be reprinted alone.</p>
+  </div>
+</section>
+
+<!-- 07 PROOF -->
+<section class="ch proof" data-ch="proof" data-name="PROOF" data-bg="#07080a">
+  <p class="kicker mono">Bench log · measured, not claimed</p>
+  <h2 class="h2 wide" data-split>Every number here came off the real hardware.</h2>
+  <div class="grid">
+    <div class="cell"><b>5–12<small>s</small></b><span>complete soil reading</span></div>
+    <div class="cell"><b>1.8–10<small>s</small></b><span>Hindi advice written</span></div>
+    <div class="cell"><b>±3<small>%</small></b><span>conductivity accuracy</span></div>
+    <div class="cell"><b>±0.3</b><span>pH accuracy</span></div>
+    <div class="cell"><b>4/4</b><span>repeat reads, byte for byte identical</span></div>
+    <div class="cell"><b>₹0</b><span>per test, once you own it</span></div>
+  </div>
+  <div class="marquee mono" aria-hidden="true"><div class="mq"><span>[271, 262, 95, 79, 0, 3, 0, 52, 47]</span><span>EC 96 → SALINITY 52 ✓ TDS 48 ✓</span><span>27.1 % · 26.2 °C · 95 µS/cm · pH 7.9</span><span>[271, 262, 95, 79, 0, 3, 0, 52, 47]</span><span>EC 96 → SALINITY 52 ✓ TDS 48 ✓</span><span>27.1 % · 26.2 °C · 95 µS/cm · pH 7.9</span></div></div>
+</section>
+
+<!-- 08 REAL -->
+<section class="ch pin real" data-ch="real" data-name="REAL" data-bg="#07080a" style="--len:360vh">
+  <div class="stick">
+    <div class="real-head">
+      <p class="kicker mono">Photographs · not a render</p>
+      <h2 class="h2">Everything above was drawn by your browser.<br><span class="dim">This is the real one.</span></h2>
+    </div>
+    <div class="track">
+      <figure><img src="img/ph-wand-full.webp" alt="The finished wand" loading="lazy"><figcaption class="mono"><b>01</b>The whole wand</figcaption></figure>
+      <figure><img src="img/ph-wand-display.webp" alt="Display, camera and three buttons" loading="lazy"><figcaption class="mono"><b>02</b>Display, camera, three buttons</figcaption></figure>
+      <figure><img src="img/ph-wand-top.webp" alt="Top cap with solar panel and fan" loading="lazy"><figcaption class="mono"><b>03</b>Solar panel and fan</figcaption></figure>
+      <figure><img src="img/ph-wand-front.webp" alt="The two printed sections" loading="lazy"><figcaption class="mono"><b>04</b>Two printed sections</figcaption></figure>
+      <figure><img src="img/ph-wand-lower.webp" alt="Status light, OLED and speaker" loading="lazy"><figcaption class="mono"><b>05</b>Light, OLED, speaker</figcaption></figure>
+      <figure><img src="img/ph-wand-probe.webp" alt="The four-prong probe, still carrying soil" loading="lazy"><figcaption class="mono"><b>06</b>Four prongs, still muddy</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 09 APP -->
+<section class="ch app" data-ch="app" data-name="APP" data-bg="#1d4fb0" data-fg="#f3f1ec">
+  <div class="app-copy">
+    <p class="kicker mono">Companion · Android app</p>
+    <h2 class="h2" data-split>One wand. A whole village.</h2>
+    <p class="app-p">The Android app finds the wand over Wi-Fi by itself. No address is ever typed. Every scan, photo and advice is kept per farmer, so one wand can serve every family in a village.</p>
+    <ul class="ticks mono"><li>Live probe readings</li><li>History per farmer</li><li>Start or stop a scan</li><li>हिंदी · English · मराठी</li></ul>
+  </div>
+  <div class="phones">
+    <div class="ph p1"><img src="img/app-dashboard.webp" alt="Dashboard" loading="lazy"></div>
+    <div class="ph p2"><img src="img/app-home-connected.webp" alt="Home, wand connected" loading="lazy"></div>
+    <div class="ph p3"><img src="img/app-farmers.webp" alt="Farmer profiles" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- 10 WIN -->
+<section class="ch win" id="win" data-ch="win" data-name="WIN" data-bg="#07080a">
+  <p class="kicker mono gold">Recognition</p>
+  <h2 class="win-h"><span>Overall</span><span>Winner.</span></h2>
+  <p class="win-sub">Bharat Innovation Challenge 2025–26 · Lovely Professional University, Punjab</p>
+  <div class="win-nums">
+    <div><b data-count="2600" data-plus>0</b><span class="mono">teams</span></div>
+    <div><b data-count="10000" data-plus>0</b><span class="mono">students</span></div>
+    <div><b data-count="28">0</b><span class="mono">states</span></div>
+    <div><b data-count="21">0</b><span class="mono">industry judges</span></div>
+  </div>
+  <div class="win-pics">
+    <figure class="w1"><img src="img/win-stage.webp" alt="Receiving the Overall Winner cheque on stage" loading="lazy"></figure>
+    <figure class="w2"><img src="img/win-trophies.webp" alt="The three trophies" loading="lazy"></figure>
+    <figure class="w3"><img src="img/win-duo.webp" alt="Holding the Overall Winner trophy at LPU" loading="lazy"></figure>
+  </div>
+  <div class="awards mono"><span><b>₹3,00,000</b>Overall Winner</span><span><b>✦</b>Best School Award</span><span><b>✦</b>Jury Special Award</span></div>
+</section>
+
+<!-- 11 TEAM -->
+<section class="ch team" data-ch="team" data-name="TEAM" data-bg="#ebe7de" data-fg="#0d0f12">
+  <p class="kicker mono">Team Sanketra</p>
+  <div class="people">
+    <div class="pp"><img src="img/team-shubh.webp" alt="Shubh Kumar Jayaswal" loading="lazy"><div><h3>Shubh Kumar Jayaswal</h3><p class="mono">Project lead · hardware, firmware, AI, app</p></div></div>
+    <div class="pp"><img src="img/team-abhinav.webp" alt="Abhinav Rawat" loading="lazy"><div><h3>Abhinav Rawat</h3><p class="mono">Hardware integration</p></div></div>
+  </div>
+  <p class="school">DAV Public School, Defence Colony, Dehradun</p>
+  <div class="cta">
+    <a class="btn" href="https://drive.google.com/file/d/11JI3mxEhYoAo54mF34mX8CPzfkzJrtnX/view" target="_blank" rel="noopener" data-magnet><span class="rec"></span>Watch the demo</a>
+    <a class="btn ghost" href="https://instagram.com/sanketra.in" target="_blank" rel="noopener" data-magnet>@sanketra.in</a>
+  </div>
+</section>
+
+<footer class="foot" data-ch="foot" data-name="END" data-bg="#ebe7de" data-fg="#0d0f12">
+  <div class="foot-word">FASAL SATHI</div>
+  <div class="foot-row mono">
+    <span>Helping hands that feed India.</span>
+    <span>Theme · Agriculture &amp; Rural Development</span>
+    <span>Sub Theme · Precision Agriculture &amp; Smart Farming Technology</span>
+    <span>Team Sanketra · 2026</span>
+  </div>
+</footer>
+
+</main>
+
+<div id="cursor" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<noscript><style>#loader{display:none}</style></noscript>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

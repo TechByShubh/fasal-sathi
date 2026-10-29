@@ -1,0 +1,5 @@
+shots/
+tools_shot.py
+tools_sheet.py
+__pycache__/
+.impeccable/
