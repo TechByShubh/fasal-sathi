@@ -403,8 +403,8 @@ html.go .hw { translate: 0 0; }
   .reads { top: auto; bottom: 7vh; transform: none; gap: 7px; width: min(250px, 19vw); }
   .rd { padding: 9px 14px; } .rd b { font-size: 24px; }
   .soil-note { top: auto; bottom: 7vh; }
-  .track { top: auto; bottom: 7vh; }
-  .track figure { width: calc(46vh * 9 / 16); }
+  .track { top: auto; bottom: calc(40px + 4vh); }
+  .track figure { width: calc(min(44vh, 100vh - 430px) * 9 / 16); }
   .idcard { bottom: 5vh; left: calc(var(--pad) + min(500px, 40vw) + 24px); transform: translateY(20px); }
   .idcard.on { transform: none; }
   .chips li { padding: 9px 0; }
