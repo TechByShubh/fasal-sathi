@@ -39,31 +39,56 @@ function track(keys) {
 }
 
 const WAND = track([
-  ['hero', 0, 0, { ms: .6, mx: 0, my: 0, x: 0, y: -.32, z: 0, rx: .06, ry: -.35, rz: .12, s: .7, ex: 0, spin: 1 }],
+  ['hero', 0, 0, { x: 0, y: -.32, z: 0, rx: .06, ry: -.35, rz: .12, s: .7, ex: 0, spin: 1 }],
   ['hero', 0, .6, { x: 1.9, y: -.1, s: .7, rz: -.04, ry: .5, spin: .8 }],
-  ['problem', 0, 0, { my: 1.5, x: 3.45, y: -.1, s: .7, rx: .12, ry: .9, rz: -.2, spin: .5 }],
+  ['problem', 0, 0, { x: 3.45, y: -.1, s: .7, rx: .12, ry: .9, rz: -.2, spin: .5 }],
   ['problem', 1, 0, { x: 3.8, y: .25, s: .68, rx: .2, ry: 2.4, rz: -.32, spin: .3 }],
-  ['soil', 0, -.3, { my: 0, x: 1.4, y: 4.4, s: .62, rx: .05, ry: 0, rz: -.12, spin: 0 }],
+  ['soil', 0, -.3, { x: 1.4, y: 4.4, s: .62, rx: .05, ry: 0, rz: -.12, spin: 0 }],
   ['soil', 0, 0, { x: -.7, y: 3.1, s: .62, rx: .1, ry: 0, rz: 0 }],
   ['soil', .3, 0, { x: -.7, y: .82 }],
   ['soil', .9, 0, { x: -.7, y: .82 }],
   ['eye', 0, 0, { x: 4.0, y: .15, s: .6, rx: .04, ry: -.85, rz: .04 }],
   ['eye', 1, 0, { x: 4.15, y: 0, ry: -.62 }],
-  ['voice', 0, 0, { my: -1.1, x: 3.75, y: .2, s: .72, rx: .05, ry: .42, rz: -.06 }],
+  ['voice', 0, 0, { x: 3.75, y: .2, s: .72, rx: .05, ry: .42, rz: -.06 }],
   ['voice', 1, 0, { x: 3.6, y: 0, ry: -.42, rz: .04 }],
-  ['brain', 0, -.3, { my: 0, x: 4.4, y: 7.8, s: .6, ry: 1.4, rz: .3 }],
-  ['inside', 0, -.62, { mx: 0, x: 4.4, y: 7.8 }],
-  ['inside', 0, -.6, { ms: .9, mx: -1.75, x: 2.0, y: -8.5, ry: -1.2, rz: 0, rx: .05 }],
-  ['inside', 0, 0, { my: -1.1, x: 2.1, y: -.3, s: .6, ry: .3, ex: 0 }],
+  ['brain', 0, -.3, { x: 4.4, y: 7.8, s: .6, ry: 1.4, rz: .3 }],
+  ['inside', 0, -.62, { x: 4.4, y: 7.8 }],
+  ['inside', 0, -.6, { x: 2.0, y: -8.5, ry: -1.2, rz: 0, rx: .05 }],
+  ['inside', 0, 0, { x: 2.1, y: -.3, s: .6, ry: .3, ex: 0 }],
   ['inside', .14, 0, { x: 2.1, y: -.3, ry: .25, ex: 0 }],
   ['inside', .55, 0, { x: 1.7, y: -.12, s: .47, ry: -.22, ex: 1 }],
   ['inside', .97, 0, { ry: .32, ex: 1 }],
-  ['proof', 0, -.35, { ms: .6, mx: 0, my: 0, x: 2.2, y: 8.6, ex: .4, ry: -1.8 }],
+  ['proof', 0, -.35, { x: 2.2, y: 8.6, ex: .4, ry: -1.8 }],
   ['team', 0, -.72, { x: 2.2, y: 8.6 }],
-  ['team', 0, -.7, { my: 30, x: 4.0, y: -8.5, s: .66, ex: 0, ry: -.6, rz: 0, spin: 0 }],
+  ['team', 0, -.7, { x: 4.0, y: -8.5, s: .66, ex: 0, ry: -.6, rz: 0, spin: 0 }],
   ['team', 0, 0, { x: 3.9, y: -.15, s: .66, rx: .05, ry: -.3, rz: .08, spin: 1 }],
   ['team', 0, .9, { x: 3.9, y: .4 }],
   ['foot', 0, -.2, { x: 0, y: 1.05, s: .5, rx: .04, rz: 0, spin: 1 }],
+]);
+// Portrait screens (phones and tablets held upright) stack the copy, so the wand
+// takes its own path through the empty space: mx/my move it within the stage,
+// ms scales the stage (wand, soil, bands), sy lifts the whole stage.
+const MWAND = track([
+  ['hero', 0, 0, { ms: .6, mx: 0, my: -2.1, sy: 1 }],
+  ['hero', 0, .6, { mx: 1.4, my: -1.5 }],
+  ['problem', 0, 0, { ms: .5, mx: 2.7, my: -6.2 }],
+  ['problem', .45, 0, {}],
+  ['problem', .66, 0, { mx: 2.6, my: 1.8 }],
+  ['problem', 1, 0, {}],
+  ['soil', 0, -.3, { ms: .5, mx: 0, my: 0, sy: .55 }],
+  ['soil', .9, 0, {}],
+  ['eye', 0, 0, { ms: .6, sy: 1 }],
+  ['voice', 0, 0, { ms: .55, my: -1.6 }],
+  ['voice', 1, 0, {}],
+  ['brain', 0, -.3, { ms: .6, my: 0 }],
+  ['inside', 0, -.62, { mx: 0 }],
+  ['inside', 0, -.6, { ms: .9, mx: -1.75 }],
+  ['inside', 0, 0, { my: -2.4 }],
+  ['inside', .4, 0, {}],
+  ['inside', .55, 0, { ms: .72, my: -3.6 }],
+  ['inside', .97, 0, {}],
+  ['proof', 0, -.35, { ms: .6, mx: 0, my: 0 }],
+  ['team', 0, -.7, { my: 30 }],
 ]);
 const SET = track([
   ['hero', 0, 0, { bands: 1, sheets: 0, soil: -8, leaf: -8, rings: 0 }],
@@ -420,10 +445,12 @@ export async function createWorld(canvas) {
   const MOB = new Set(['cap', 'tft', 'board', 'spk', 'probe']);
 
   // ── state
-  let W = 1, H = 1, mobile = false, spinA = 0, last = performance.now(), time = 0;
+  let W = 1, H = 1, mobile = false, fitK = 1, spinA = 0, last = performance.now(), time = 0;
   const cur = { mx: 0, my: 0 };
   function resize() {
     W = innerWidth; H = innerHeight; mobile = W / H < .85;
+    // short phones have less room between the stacked lines of copy
+    fitK = W < 600 ? clamp(H / W / 2.05, .8, 1) : 1;
     renderer.setSize(W, H, false);
     camera.aspect = W / H; camera.fov = mobile ? 42 : 30; camera.updateProjectionMatrix();
     dustMat.uniforms.uPx.value = renderer.getPixelRatio() * (H / 900);
@@ -439,9 +466,9 @@ export async function createWorld(canvas) {
     spinA += dt * .42 * (P.spin || 0);
     if ((P.spin || 0) < .99) { const tgt = Math.round(spinA / TAU) * TAU; spinA = mix(spinA, tgt, (1 - (P.spin || 0)) * .06); }
     let { x, s } = P, py = P.y;
-    if (mobile) x = (P.mx || 0) + x * .12;
-    stage.scale.setScalar(mobile ? (P.ms || .6) : 1); stage.position.y = mobile ? 1.0 : 0;
-    if (mobile) py += P.my || 0;
+    const M = mobile ? MWAND.get(y) : null;
+    if (mobile) { x = M.mx + x * .12; py += M.my; }
+    stage.scale.setScalar(mobile ? M.ms * fitK : 1); stage.position.y = mobile ? M.sy : 0;
     const intro = ease(clamp(st.intro ?? 1));
     py -= (1 - intro) * 5.5;
     const bob = Math.sin(time * 1.1) * .06 * (1 - (ch.soil?.vis || 0));
@@ -539,5 +566,5 @@ export async function createWorld(canvas) {
     });
   }
 
-  return { frame, resize, layout: (pos) => { WAND.layout(pos); SET.layout(pos); } };
+  return { frame, resize, layout: (pos) => { WAND.layout(pos); MWAND.layout(pos); SET.layout(pos); } };
 }

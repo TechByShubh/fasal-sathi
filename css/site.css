@@ -13,6 +13,7 @@
   --line: color-mix(in srgb, var(--fg) 16%, transparent);
   --pad: clamp(20px, 4.2vw, 72px);
   --ease: cubic-bezier(.2, .7, .1, 1);
+  --u: 1px;
 }
 * { box-sizing: border-box; }
 html { background: var(--bg); color: var(--fg); transition: background-color .9s var(--ease), color .9s var(--ease); }
@@ -294,53 +295,121 @@ html.go .hw { translate: 0 0; }
 #cursor.big i:nth-child(3) { transform: translate(-14px, 14px); } #cursor.big i:nth-child(4) { transform: translate(14px, 14px); }
 @media (pointer: fine) { #cursor { display: block; } body, a { cursor: none; } }
 
-/* phones and narrow screens: the wand sits above the type */
-@media (max-width: 860px) {
-  body { font-size: 16px; }
+/* portrait screens (phones and tablets held upright). This matches the 3D layer,
+   which switches to its portrait path below the same aspect ratio. --u is 1px on a
+   390 px phone and grows to about 1.3px on an 800 px tablet. */
+@media (max-aspect-ratio: 17/20) {
+  :root { --u: calc(.7px + .077vw); --pad: calc(20 * var(--u)); }
+  body { font-size: calc(16 * var(--u)); }
+  .mono { font-size: calc(11.5 * var(--u)); }
   .links, .hud-l, .hud-rail { display: none; }
   .hud-r { right: 30px; bottom: 18px; }
+  .brand { font-size: calc(15 * var(--u)); }
   .brand .hi { display: none; }
-  .pill { padding: 10px 14px; font-size: 12px; }
-  .hw { font-size: 21vw; }
-  .hero-word { flex-direction: column; gap: 0; justify-content: flex-start; padding-top: 22vh; }
-  .hero-meta { top: 84px; }
+  .pill { padding: calc(10 * var(--u)) calc(14 * var(--u)); font-size: calc(12 * var(--u)); }
+  .h2 { font-size: calc(36 * var(--u)); }
+  .kicker { margin-bottom: calc(14 * var(--u)); }
+
+  /* hero: the name on top, the wand standing under it, the words at the foot */
+  .hero { min-height: 0; height: 100svh; }
+  .hero-word { flex-direction: column; gap: 0; justify-content: flex-start; padding-top: 16.5svh; }
+  .hero-meta { top: calc(70px + 1.6vw); }
+  .eyebrow { max-width: none; padding-right: 6px; }
   .hero-hi { display: none; }
   .cue { display: none; }
-  .hero-foot { flex-direction: column; align-items: flex-start; gap: 16px; bottom: 80px; }
-  .problem .kicker, .soil-head, .voice .kicker, .real-head, .inside .kicker { top: 90px; }
-  .k { font-size: 17vw; }
-  .k3 { font-size: 18vw; }
-  .kin { margin-top: -10vh; }
-  .kin-after { flex-direction: column; align-items: flex-start; bottom: 8vh; gap: 20px; }
-  .stat86 .n { font-size: 64px; }
-  .timer { top: 200px; left: var(--pad); right: auto; font-size: 34px; }
-  .reads { top: auto; bottom: 28px; transform: none; right: var(--pad); left: var(--pad); width: auto; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .rd { padding: 10px 12px; } .rd b { font-size: 22px; } .rd.est { grid-column: 1 / -1; }
+  .hero-foot { flex-direction: column; align-items: flex-start; gap: calc(14 * var(--u)); bottom: calc(34px + 2svh); }
+  .lead { font-size: calc(17 * var(--u)); max-width: 26ch; }
+  .badge { font-size: calc(13 * var(--u)); }
+
+  .problem .kicker, .soil-head, .voice .kicker, .real-head, .inside .kicker { top: calc(76px + 1.8vw); }
+  /* the three words sit high; the wand waits bottom right until they leave */
+  .problem .stick { justify-content: flex-start; padding-top: calc(112px + 7svh); }
+  .k { font-size: 15.5vw; }
+  .k3 { font-size: 16.5vw; }
+  .kin-after { flex-direction: column; align-items: flex-start; bottom: 8svh; gap: calc(18 * var(--u)); width: calc(100% - 2 * var(--pad)); }
+  .big { font-size: calc(26 * var(--u)); }
+  .stat86 { max-width: calc(300 * var(--u)); }
+  .stat86 .n { font-size: calc(64 * var(--u)); }
+  .stat86 .pc { font-size: calc(30 * var(--u)); }
+  .stat86 p { font-size: calc(14 * var(--u)); }
+
+  .soil .h2 { font-size: calc(34 * var(--u)); }
+  .timer { top: calc(76px + 1.8vw + 26 * var(--u)); right: var(--pad); font-size: calc(30 * var(--u)); }
+  .reads { top: auto; bottom: 28px; transform: none; right: var(--pad); left: var(--pad); width: auto; grid-template-columns: 1fr 1fr; gap: calc(8 * var(--u)); }
+  .rd { padding: calc(9 * var(--u)) calc(12 * var(--u)); } .rd b { font-size: calc(22 * var(--u)); } .rd.est { grid-column: 1 / -1; }
+  .rd span { font-size: calc(10 * var(--u)); } .rd small { font-size: calc(12 * var(--u)); }
   .soil-note { display: none; }
-  .eye .stick { align-items: flex-end; padding-bottom: 8vh; }
+
+  .eye .stick { align-items: flex-end; padding-bottom: 9svh; }
   .eye-copy { width: 100%; }
+  .eye .h2 { font-size: calc(34 * var(--u)); }
   .chips { display: none; }
-  .idcard { left: auto; right: var(--pad); top: 100px; bottom: auto; transform: none; width: 210px; }
+  .idcard { left: auto; right: var(--pad); top: calc(84px + 1.6vw); bottom: auto; transform: none; width: calc(210 * var(--u)); }
   .idcard.on { transform: none; }
-  .voice-h { top: 120px; font-size: 34px; }
-  .say { width: auto; right: var(--pad); bottom: 6vh; }
-  .dev { font-size: 28px; }
-  .lines { height: 150px; }
-  .in-h { top: 120px; font-size: 40px; }
+  .idrow { font-size: calc(11 * var(--u)); }
+
+  .voice-h { top: calc(104px + 3vw); font-size: calc(34 * var(--u)); }
+  .say { width: auto; right: var(--pad); bottom: 6svh; }
+  .tabs span { font-size: calc(14 * var(--u)); padding: calc(7 * var(--u)) calc(12 * var(--u)); }
+  .dev { font-size: calc(27 * var(--u)); }
+  .gl { font-size: calc(15 * var(--u)); }
+  .lines { height: calc(150 * var(--u)); }
+
+  .in-h { top: calc(104px + 3vw); font-size: calc(40 * var(--u)); }
   .in-sub { display: none; }
-  .lab b { font-size: 12px; } .lab .tx span { display: none; }
+  .lab b { font-size: calc(12.5 * var(--u)); } .lab .tx span { display: none; }
+
+  .brain, .proof, .win, .team { padding-top: 16svh; }
   .steps, .grid { grid-template-columns: 1fr; }
-  .step, .step + .step { padding: 26px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .step, .step + .step { padding: calc(24 * var(--u)) 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .step h3 { font-size: calc(26 * var(--u)); }
   .ladder { grid-template-columns: 1fr; }
   .ladder ol { grid-template-columns: 1fr 1fr; }
-  .track { padding-left: 10vw; top: 38vh; }
-  .track figure { width: calc(40vh * 9 / 16); }
-  .app { grid-template-columns: 1fr; }
-  .phones { height: 62vh; }
-  .ph { width: 40vw; }
+  .ladder li b { font-size: calc(24 * var(--u)); }
+  .cell b { font-size: calc(48 * var(--u)); }
+
+  .real .h2 { font-size: calc(30 * var(--u)); }
+  .track { padding-left: 10vw; top: auto; bottom: 10svh; }
+  .track figure { width: min(calc(44svh * 9 / 16), 40vw); }
+
+  .app { grid-template-columns: 1fr; padding-top: 14svh; gap: 30px; }
+  .app-p { font-size: calc(17 * var(--u)); }
+  .phones { height: min(62svh, 118vw); }
+  .ph { width: 38vw; border-radius: calc(30 * var(--u)); }
+  .ph img { border-radius: calc(23 * var(--u)); }
+
+  .win-h { font-size: 14.2vw; }
+  .win-sub { font-size: calc(16 * var(--u)); }
   .win-nums { grid-template-columns: 1fr 1fr; }
+  .win-nums b { font-size: calc(40 * var(--u)); }
   .win-pics { grid-template-columns: 1fr 1fr; }
   .w1 { grid-column: 1 / -1; }
+  .awards b { font-size: calc(16 * var(--u)); }
+
+  .pp img { width: calc(80 * var(--u)); height: calc(80 * var(--u)); }
+  .pp h3 { font-size: calc(30 * var(--u)); }
+  .btn { padding: calc(16 * var(--u)) calc(24 * var(--u)); font-size: calc(15 * var(--u)); }
+}
+/* small landscape screens (a phone on its side): no room for the nav links */
+@media (max-width: 860px) and (min-aspect-ratio: 17/20) {
+  .links, .hud-l, .hud-rail, .brand .hi { display: none; }
+}
+/* short landscape screens (tablets on their side, small laptops) */
+@media (min-aspect-ratio: 17/20) and (max-height: 820px) {
+  .problem .kicker, .soil-head, .voice .kicker, .inside .kicker { top: 96px; }
+  .real-head { top: 92px; }
+  .voice-h, .in-h { top: 132px; }
+  .timer { top: 96px; font-size: clamp(40px, 5vw, 80px); }
+  .reads { top: auto; bottom: 7vh; transform: none; gap: 7px; width: min(250px, 19vw); }
+  .rd { padding: 9px 14px; } .rd b { font-size: 24px; }
+  .soil-note { top: auto; bottom: 7vh; }
+  .track { top: auto; bottom: 7vh; }
+  .track figure { width: calc(46vh * 9 / 16); }
+  .idcard { bottom: 5vh; left: calc(var(--pad) + min(500px, 40vw) + 24px); transform: translateY(20px); }
+  .idcard.on { transform: none; }
+  .chips li { padding: 9px 0; }
+  .say { bottom: 6vh; }
+  .lines { height: 150px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .grain, .mq, .brand .dot, .rec, .cue i { animation: none; }
