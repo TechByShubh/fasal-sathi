@@ -68,6 +68,7 @@ main { position: relative; z-index: 10; }
 .links { display: flex; gap: 30px; font-size: 11px; }
 .links a { opacity: .7; transition: opacity .3s; position: relative; }
 .links a:hover { opacity: 1; }
+.links a.new { opacity: 1; color: var(--saffron); }
 .links a::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -5px; height: 1px; background: currentColor; transition: right .4s var(--ease); }
 .links a:hover::after { right: 0; }
 .pill, .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border: 1px solid currentColor; border-radius: 999px; font: 600 13px/1 'Manrope'; letter-spacing: .02em; transition: background .3s, color .3s; will-change: transform; }

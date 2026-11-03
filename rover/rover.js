@@ -127,7 +127,7 @@ function main() {
   let cx = 0.53;
   const zoom = { x: 1, v: 0, target: 1, last: 0, pinch: false };
   const vel = { yaw: 0, pitch: 0 };
-  let dragging = false, lastInput = performance.now(), autoSpin = true, current = 'overview';
+  let dragging = false, lastInput = -1e9, autoSpin = true, current = 'overview';
 
   function focus(name) {
     current = name; const v = SYS[name].view;
@@ -172,8 +172,8 @@ function main() {
     }
     if (down) down.moved += Math.abs(dx) + Math.abs(dy);
     const ky = 0.0062 * (goal.base / 1.6 + 0.4) / 1.4;
-    goal.yaw -= dx * 0.0062; goal.pitch = THREE.MathUtils.clamp(goal.pitch + dy * 0.0045, 0.02, 1.25);
-    vel.yaw = -dx * 0.0062; vel.pitch = dy * 0.0045;
+    goal.yaw += dx * 0.0062; goal.pitch = THREE.MathUtils.clamp(goal.pitch + dy * 0.0045, 0.02, 1.25);
+    vel.yaw = dx * 0.0062; vel.pitch = dy * 0.0045;
     lastInput = performance.now(); void ky;
   });
   function release(e) {
@@ -223,7 +223,7 @@ function main() {
     });
     $('ldNum').textContent = '100'; $('ldBar').style.transform = 'scaleX(1)';
     setTimeout(() => $('loader').classList.add('out'), 250);
-    focus('overview');
+    focus('overview'); lastInput = -1e9;
   }, (xhr) => {
     const total = xhr.total || 6833596;
     const p = Math.min(99, Math.round(xhr.loaded / total * 100));
@@ -249,7 +249,7 @@ function main() {
     if (!dragging) {
       goal.yaw += vel.yaw * dt * 60; goal.pitch = THREE.MathUtils.clamp(goal.pitch + vel.pitch * dt * 60, 0.02, 1.25);
       const f = Math.exp(-dt * 5.2); vel.yaw *= f; vel.pitch *= f;
-      if (autoSpin && now - lastInput > 3500) goal.yaw += dt * 0.16;
+      if (autoSpin && now - lastInput > 2500) goal.yaw -= dt * 0.16;
     }
     // zoom springs back to the framing once you let go
     if (!zoom.pinch && pointers.size === 0 && now - zoom.last > 650) zoom.target = 1;
