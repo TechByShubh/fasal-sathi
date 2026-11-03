@@ -470,7 +470,11 @@ function main() {
     if (lift.t0 >= 0) {
       const k = Math.min(1, (now - lift.t0) / lift.dur), e = 0.5 - 0.5 * Math.cos(Math.PI * k);   // sine ease in and out
       lift.y = lift.from + (lift.to - lift.from) * e;
-      if (k >= 1) lift.t0 = -1;
+      if (k >= 1) {
+        lift.t0 = -1;
+        // once the wand is back up, glide home to the opening view
+        if (!liftDown && !hold && current !== 'overview') focus('overview');
+      }
     }
     if (liftNode) liftNode.position.y = lift.y;
     // hover names (mouse only)
