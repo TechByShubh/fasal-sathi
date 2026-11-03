@@ -242,19 +242,65 @@ export async function createWorld(canvas) {
     const pr = new THREE.Mesh(new THREE.CylinderGeometry(.034, .034, 1.15, 16), steel); pr.position.set(x, -3.22, z); probe.add(pr);
     const tip = new THREE.Mesh(new THREE.ConeGeometry(.034, .16, 16), steel); tip.rotation.x = Math.PI; tip.position.set(x, -3.875, z); probe.add(tip);
   }
-  // lower body: status LED board, OLED, speaker
-  cyl(.6, 2.06, blue, -1.27, lower);
+  // lower body: black waist band with cobalt ovals front and back, status LED board, OLED, speaker
+  // (matches the rover design model: real speaker with frame, screws, surround, ribbed cone and dust cap)
+  const MM = .012;                                   // world units per mm on this wand
+  const bandMat = new THREE.MeshPhysicalMaterial({ color: 0x1b1d22, roughness: .5, metalness: .05, clearcoat: .2, clearcoatRoughness: .5, bumpMap: layers, bumpScale: 1.2 });
+  cyl(.6, .56, blue, -2.02, lower);                  // cobalt foot above the bottom collar
+  cyl(.6, 1.5, bandMat, -.99, lower);                // the waist band, up to the middle collar
   cyl(.665, .26, white, -.11, lower);
+  function ovalGeo(R, yc, hy, hw, ang0) {
+    const seg = 72, rings = 12, pos = [], nor = [], uv = [], idx = [];
+    const put = (s, y, u, v) => { const a = ang0 + s / R; pos.push(R * Math.sin(a), y, R * Math.cos(a)); nor.push(Math.sin(a), 0, Math.cos(a)); uv.push(u, v * hy * 2.2); };
+    put(0, yc, .5, .5);
+    for (let k = 1; k <= rings; k++) for (let i = 0; i < seg; i++) { const ph = TAU * i / seg, r = k / rings; put(hw * r * Math.cos(ph), yc + hy * r * Math.sin(ph), .5 + .5 * r * Math.cos(ph), .5 + .5 * r * Math.sin(ph)); }
+    for (let i = 0; i < seg; i++) idx.push(0, 1 + i, 1 + (i + 1) % seg);
+    for (let k = 0; k < rings - 1; k++) for (let i = 0; i < seg; i++) { const a = 1 + k * seg + i, b = 1 + k * seg + (i + 1) % seg; idx.push(a, a + seg, b + seg, a, b + seg, b); }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    g.setIndex(idx); return g;
+  }
+  for (const a0 of [0, Math.PI]) lower.add(new THREE.Mesh(ovalGeo(.607, -.96, .72, .52, a0), blue));
   const shoulder = new THREE.Mesh(scaleUV(new THREE.LatheGeometry(Array.from({ length: 17 }, (_, i) => { const t = i / 16; return new THREE.Vector2(.64 + .36 * (t * t * (3 - 2 * t)), .02 + t * .74); }), 72), 1, 2), blue);
   lower.add(shoulder);
-  const ledPcb = front(new THREE.Mesh(new RoundedBoxGeometry(.2, .2, .04, 2, .01), new THREE.MeshStandardMaterial({ color: 0x8c1f22, roughness: .6 })), .6, -.5, lower);
-  const led = new THREE.Mesh(new THREE.SphereGeometry(.035, 16, 12), new THREE.MeshBasicMaterial({ color: 0x52e05a })); led.position.set(0, -.5, .63); lower.add(led);
-  const oledFrame = front(new THREE.Mesh(new RoundedBoxGeometry(.38, .27, .05, 2, .012), white), .6, -.9, lower);
-  const oledTex = canvasTex(256, 128, (g) => { g.fillStyle = '#000'; g.fillRect(0, 0, 256, 128); g.fillStyle = '#9fe6ff'; g.font = '700 22px JB'; g.fillText('28°', 104, 44); g.font = '700 13px JB'; g.fillText('RAIN 10%', 104, 72); g.fillText('DEHRADUN', 104, 96); g.beginPath(); g.arc(52, 58, 22, 0, TAU); g.fill(); });
-  const oled = new THREE.Mesh(new THREE.PlaneGeometry(.3, .17), new THREE.MeshBasicMaterial({ map: oledTex, toneMapped: false })); oled.position.set(0, -.9, .627); lower.add(oled);
-  const spk = new THREE.Group(); spk.position.set(0, -1.62, .56); lower.add(spk);
-  const spkRim = new THREE.Mesh(new THREE.TorusGeometry(.28, .05, 16, 48), black); spk.add(spkRim);
-  const cone = new THREE.Mesh(new THREE.SphereGeometry(.24, 32, 16, 0, TAU, 0, Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: 0x1a1c20, roughness: .2, clearcoat: 1 })); cone.rotation.x = Math.PI / 2; cone.scale.z = .35; spk.add(cone);
+  // status LED board (red PCB, two pads, the WS2812) and the two mic holes above it
+  const ledPcb = front(new THREE.Mesh(new RoundedBoxGeometry(.19, .19, .05, 2, .008), new THREE.MeshStandardMaterial({ color: 0xc8463a, roughness: .55 })), .6, -.41, lower);
+  const led = new THREE.Mesh(new RoundedBoxGeometry(.065, .065, .03, 2, .008), new THREE.MeshBasicMaterial({ color: 0x52e05a })); led.position.set(0, -.41, .63); lower.add(led);
+  const padMat = new THREE.MeshStandardMaterial({ color: 0x9aa0a8, metalness: .9, roughness: .3 });
+  for (const x of [-.078, .078]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(.013, .013, .01, 16), padMat); p.rotation.x = Math.PI / 2; p.position.set(x, -.345, .627); lower.add(p); }
+  const holeMat = new THREE.MeshBasicMaterial({ color: 0x050506 });
+  for (const x of [-.048, .048]) { const h = new THREE.Mesh(new THREE.CircleGeometry(.016, 20), holeMat); h.position.set(x, -.28, .603); lower.add(h); }
+  // OLED in an aluminium frame, showing the weather card the wand really shows
+  const alu = new THREE.MeshStandardMaterial({ color: 0xc9ccd1, metalness: .85, roughness: .32 });
+  const oledFrame = front(new THREE.Mesh(new RoundedBoxGeometry(.384, .312, .06, 2, .01), alu), .6, -.8, lower);
+  const oledTex = canvasTex(256, 140, (g) => {
+    g.fillStyle = '#0a0612'; g.fillRect(0, 0, 256, 140); g.fillStyle = '#dfe6ff'; g.strokeStyle = '#dfe6ff';
+    g.beginPath(); g.arc(46, 52, 20, 0, TAU); g.arc(70, 58, 16, 0, TAU); g.arc(28, 62, 14, 0, TAU); g.fill();
+    g.lineWidth = 4; g.beginPath(); g.moveTo(52, 80); g.lineTo(42, 100); g.lineTo(54, 100); g.lineTo(44, 120); g.stroke();
+    g.fillRect(100, 18, 3, 100);
+    g.font = '700 19px JB'; g.fillText('Rain: 100%', 112, 40); g.fillText('29 / 22C', 112, 66); g.font = '700 16px JB'; g.fillText('Thunderstorm', 112, 92);
+    g.fillRect(14, 122, 80, 2); g.fillRect(160, 122, 82, 2); g.font = '700 11px JB'; g.fillText('SCAN to start', 104, 128);
+  });
+  const oled = new THREE.Mesh(new THREE.PlaneGeometry(.312, .168), new THREE.MeshBasicMaterial({ map: oledTex, toneMapped: false })); oled.position.set(0, -.8, .632); lower.add(oled);
+  const oledGlass = new THREE.Mesh(new THREE.PlaneGeometry(.312, .168), new THREE.MeshPhysicalMaterial({ color: 0x000000, transparent: true, opacity: .12, roughness: .03, clearcoat: 1, clearcoatRoughness: .02 })); oledGlass.position.set(0, -.8, .634); lower.add(oledGlass);
+  // the speaker, built like a real driver (sizes in mm from the design model, scaled to 51 mm)
+  const spk = new THREE.Group(); spk.position.set(0, -1.43, 0); lower.add(spk);
+  const SK = 51 / 56, SF = 55;
+  const lathe = (pts, mat) => { const m = new THREE.Mesh(new THREE.LatheGeometry(pts.map(([r, x]) => new THREE.Vector2(r * SK * MM, (SF + x) * MM)), 96), mat); m.rotation.x = Math.PI / 2; spk.add(m); return m; };
+  const oxide = new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, color: 0x24262b, metalness: .75, roughness: .34, clearcoat: .3 });
+  const rubber = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, color: 0x131416, roughness: .78 });
+  const coneMat = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, color: 0x0c0c0e, roughness: .72 });
+  const capMat = new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, color: 0x08080a, roughness: .14, clearcoat: 1, clearcoatRoughness: .05 });
+  const housing = new THREE.Mesh(new THREE.CylinderGeometry(29 * SK * MM, 29 * SK * MM, 17 * MM, 64), new THREE.MeshPhysicalMaterial({ color: 0x141518, roughness: .45, clearcoat: .3 }));
+  housing.rotation.x = Math.PI / 2; housing.position.z = (SF - 8.5) * MM; spk.add(housing);
+  lathe([[22.6, 0], [28, 0], [28, 1.2], [27.4, 1.6], [22.6, 1.6], [22.6, 0]], oxide);                                  // steel frame
+  lathe(Array.from({ length: 13 }, (_, i) => { const a = Math.PI * i / 12; return [20.8 + 1.8 * Math.cos(a), 1.6 + 1.5 * Math.sin(a)]; }), rubber);  // rubber surround
+  lathe(Array.from({ length: 25 }, (_, i) => { const t = i / 24; return [19 - 10 * t, 1.6 - 3.3 * t + (i % 4 === 2 ? .16 : 0)]; }), coneMat);         // ribbed paper cone
+  lathe(Array.from({ length: 13 }, (_, i) => { const a = Math.PI / 2 * i / 12; return [9.1 * Math.cos(a) + .01, -1.7 + 3.6 * Math.sin(a)]; }).reverse(), capMat);  // dust cap
+  for (let q = 0; q < 4; q++) {
+    const a = Math.PI / 4 + q * Math.PI / 2, sc = new THREE.Mesh(new THREE.CylinderGeometry(1.6 * SK * MM, 1.6 * SK * MM, 1 * MM, 16), steel);
+    sc.rotation.x = Math.PI / 2; sc.position.set(25.3 * SK * MM * Math.cos(a), 25.3 * SK * MM * Math.sin(a), (SF + 2) * MM); spk.add(sc);
+  }
   // upper body: camera, display, three buttons
   cyl(1.0, 2.3, blue, 1.9, upper);
   cyl(1.02, .24, white, 3.13, upper);
@@ -435,9 +481,9 @@ export async function createWorld(canvas) {
     ['tft', upper, [.47, 1.55, 1.0], 'Colour display', '2.4 in · 320 × 240'],
     ['btn', upper, [-.27, .97, 1.0], 'Three buttons', 'Scan · Next · Prev'],
     ['board', board, [.69, .1, 0], 'Arduino UNO Q', 'Linux + microcontroller'],
-    ['led', lower, [.1, -.5, .63], 'Status light', 'WS2812 · 17 states'],
-    ['oled', lower, [-.19, -.9, .63], 'OLED screen', '128 × 64 · weather'],
-    ['spk', lower, [.3, -1.62, .6], 'Speaker', 'Speaks the advice in Hindi'],
+    ['led', lower, [.1, -.41, .63], 'Status light', 'WS2812 · 17 states'],
+    ['oled', lower, [-.19, -.8, .63], 'OLED screen', '128 × 64 · weather'],
+    ['spk', lower, [.3, -1.43, .68], 'Speaker', 'Speaks the advice in Hindi'],
     ['probe', probe, [-.27, -3.3, .12], 'Soil probe', '4 steel prongs · RS-485'],
   ];
   const v3 = new THREE.Vector3();
@@ -519,7 +565,7 @@ export async function createWorld(canvas) {
     marks.forEach((m, i) => { const on = clamp((scanY < m.userData.y ? 1 : 0) * band(eyeP, .14, .2)); const k = on * (1 + .15 * Math.sin(time * 5 + i)); m.scale.setScalar(Math.max(.001, k)); m.material.opacity = on; });
 
     // voice rings ripple out of the speaker toward the viewer
-    const sw = new THREE.Vector3(0, -1.62, .7); lower.localToWorld(sw);
+    const sw = new THREE.Vector3(0, -1.43, .72); lower.localToWorld(sw);
     rings.forEach((r, i) => {
       const ph = (time * .45 + i / rings.length) % 1;
       r.visible = S.rings > .01;

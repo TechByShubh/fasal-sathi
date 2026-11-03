@@ -476,6 +476,15 @@ html.go .hw { translate: 0 0; }
 /* no WebGL: the real photograph stands in for the 3D wand */
 html.no-webgl .hero::after { content: ''; position: absolute; left: 50%; top: 50%; width: min(30vw, 300px); aspect-ratio: 694 / 1708; transform: translate(-50%, -50%) rotate(6deg); background: url('../img/cut-wand-full.webp') center / contain no-repeat; z-index: 2; }
 
-@media (max-aspect-ratio: 17/20) { .rover-cta { position: absolute; right: 0; top: calc(100svh - 312px); margin-top: 0; transform: scale(.88); transform-origin: right center; } }
+/* compact rover button (3 Nov): smaller than v1, still a step bigger than the winner badge */
+.rover-cta { margin-top: 70px; gap: 11px; padding: 9px 17px 9px 9px; border-radius: 13px; }
+.rc-frame { border-radius: 14px; padding: 1.4px; }
+.rc-rover { width: 70px; height: 46px; border-radius: 9px; }
+.rc-k { font-size: 9px; gap: 6px; } .rc-k i { width: 5px; height: 5px; }
+.rc-t { font-size: clamp(15px, 1.12vw, 18px); }
+.rc-h { font-size: clamp(12.5px, .86vw, 14px); }
+.rc-txt { gap: 2px; }
+.rc-sprouts { width: 250px; height: 76px; }
+@media (max-aspect-ratio: 17/20) { .rover-cta { position: absolute; right: 0; top: calc(100svh - 296px); margin-top: 0; transform: scale(.92); transform-origin: right center; } }
 @media (max-width: 600px) { .rover-cta { display: none; } }
 @media (prefers-reduced-motion: reduce) { .rover-cta *, .rc-frame { animation: none !important; } .rc-sprouts .st { stroke-dashoffset: 0; } .rc-sprouts .lf, .rc-sprouts .bud, .rc-sprouts .pad, .rc-sprouts .via { transform: none; } }
