@@ -147,3 +147,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .systems .lab { margin-bottom: 6px; }
   .systems button { padding: 4px 14px 4px 0; font-size: clamp(15px, 1.25vw, 19px); }
 }
+
+/* back to the main site, beside the live dot */
+.top .rec { pointer-events: auto; }
+.back { display: inline-flex; align-items: center; gap: 6px; margin-right: 10px; padding: 6px 11px 6px 8px; color: var(--fg); text-decoration: none;
+  border: 1px solid var(--line); background: rgba(13, 15, 19, .6); transition: border-color .25s, color .25s, background .25s; }
+.back svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: square; transition: transform .35s var(--ease); }
+.back:hover { color: var(--saffron); border-color: var(--saffron); }
+.back:hover svg { transform: translateX(-3px); }
