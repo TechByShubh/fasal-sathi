@@ -197,7 +197,7 @@ function main() {
     document.body.classList.toggle('focused', name !== 'overview');
     document.querySelectorAll('.systems button').forEach((b) => b.classList.toggle('on', b.dataset.sys === name));
     showSystem(name);
-    lastInput = performance.now();
+    lastInput = name === 'overview' ? -1e9 : performance.now();   // back home: auto-spin starts as soon as the camera lands
   }
 
   // a hold keeps a zoom on screen for a while, then springs back to where you were
@@ -222,7 +222,7 @@ function main() {
     }
     document.body.classList.toggle('focused', current !== 'overview');
     showSystem(current);
-    lastInput = performance.now();
+    lastInput = springBack ? -1e9 : performance.now();
   }
 
   document.querySelectorAll('.systems button').forEach((b) => b.addEventListener('click', () => focus(current === b.dataset.sys ? 'overview' : b.dataset.sys)));
@@ -441,7 +441,7 @@ function main() {
     if (!dragging) {
       if (flying) {
         spring(cam, vel, 'yaw', goal.yaw, k, c, dt); spring(cam, vel, 'pitch', goal.pitch, k, c, dt);
-        if (Math.abs(goal.yaw - cam.yaw) < 1e-3 && Math.abs(goal.pitch - cam.pitch) < 1e-3 && Math.abs(vel.yaw) < 1e-3) flying = false;
+        if (Math.abs(goal.yaw - cam.yaw) < 4e-3 && Math.abs(goal.pitch - cam.pitch) < 4e-3 && Math.abs(vel.yaw) < 0.02 && Math.abs(vel.pitch) < 0.02) flying = false;
       } else {
         cam.yaw += vel.yaw * dt; cam.pitch = THREE.MathUtils.clamp(cam.pitch + vel.pitch * dt, 0.02, 1.25);
         const f = Math.exp(-dt * 4.5); vel.yaw *= f; vel.pitch *= f;
