@@ -167,7 +167,7 @@ function main() {
   const wrap = (a) => Math.atan2(Math.sin(a), Math.cos(a));
   function viewOf(name) {
     const v = SYS[name].view;
-    return { yaw: v.yaw, pitch: v.pitch, dist: v.dist, t: new THREE.Vector3(...v.t), cx: name === 'overview' ? 0.53 : (innerWidth / innerHeight > 1.5 ? 0.5 : 0.47) };
+    return { yaw: v.yaw, pitch: v.pitch, dist: v.dist, t: new THREE.Vector3(...v.t), cx: name === 'overview' ? 0.53 : 0.45 };
   }
   function flyTo(v, m) {
     goal.yaw = cam.yaw + wrap(v.yaw - cam.yaw); goal.pitch = v.pitch; goal.dist = v.dist; goal.t.copy(v.t); goal.cx = v.cx;
@@ -366,16 +366,10 @@ function main() {
     liftDown = !liftDown;
     lift.from = lift.y; lift.to = liftDown ? -TRAVEL : 0; lift.t0 = performance.now();
     lift.dur = 600 + 1900 * Math.abs(lift.to - lift.from) / TRAVEL;     // 2.5 s for the full 30 mm
-    $('bLiftT').textContent = liftDown ? 'Raise the wand' : 'Lower the wand';
-    bLift.classList.toggle('act', liftDown);
+    bLift.textContent = liftDown ? 'Raise the wand' : 'Lower the wand';
     if (liftDown && current === 'overview') focus('lift');
   }
   bLift.addEventListener('click', toggleLift);
-  addEventListener('keydown', (e) => {
-    if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
-    const k = e.key.toLowerCase();
-    if (k === 'l') toggleLift(); else if (k === 's') bSpin.click(); else if (k === 'r') focus('overview');
-  });
 
   // ---------------------------------------------------------------- materials: glass on the screens, coat on the wand
   const upgraded = new Map();
@@ -435,8 +429,6 @@ function main() {
     const a = -k * (o[key] - target) - c * v[key]; v[key] += a * dt; o[key] += v[key] * dt;
   }
   const clock = new THREE.Clock(); let fpsAcc = 0, fpsN = 0, fpsT = 0, time = 0;
-  const rLift = $('rLift'), rLiftBar = $('rLiftBar'), rSpin = $('rSpin'), rSpinBar = $('rSpinBar'), rReset = $('rReset'), rResetBar = $('rResetBar');
-  const setText = (el, t) => { if (el.textContent !== t) el.textContent = t; };
   function frame() {
     const dt = Math.min(clock.getDelta(), 1 / 30); time += dt;
     const now = performance.now();
@@ -490,17 +482,7 @@ function main() {
     $('hYaw').textContent = String(Math.round(deg)).padStart(3, '0');
     $('hPitch').textContent = String(Math.round(cam.pitch * 180 / Math.PI)).padStart(2, '0');
     $('hZoom').textContent = Math.round(100 * SYS[current].view.dist / cam.dist);
-    const liftState = lift.t0 >= 0 ? 'MOVING' : (liftDown ? 'READING' : 'UP');
-    $('hLift').textContent = liftState;
-    // the control rail reads live
-    const lp = -lift.y / TRAVEL, mm = String(Math.round(lp * 30)).padStart(2, '0'), zoom = Math.round(100 * SYS[current].view.dist / cam.dist);
-    setText(rLift, `${liftState === 'UP' ? 'Up' : liftState === 'READING' ? 'In the soil' : 'Moving'} · ${mm} / 30 mm`);
-    bLift.style.setProperty('--lp', lp.toFixed(3)); rLiftBar.style.transform = `scaleX(${lp.toFixed(3)})`;
-    setText(rSpin, `${autoSpin ? (hold || now - lastInput <= 2500 ? 'On · waiting' : 'On · turning') : 'Off'} · ${String(Math.round(deg)).padStart(3, '0')}°`);
-    rSpinBar.style.transform = `scaleX(${(deg / 360).toFixed(3)})`;
-    const home = Math.abs(zoom - 100) < 2 && !hold && current === 'overview';
-    setText(rReset, home ? `Zoom ${zoom}% · home` : `Zoom ${zoom}% · go home`);
-    rResetBar.style.transform = `scaleX(${home ? 0 : Math.min(1, Math.abs(zoom - 100) / 300 + 0.08).toFixed(3)})`;
+    $('hLift').textContent = lift.t0 >= 0 ? 'MOVING' : (liftDown ? 'READING' : 'UP');
     fpsAcc += dt; fpsN++; fpsT += dt;
     if (fpsT > 0.5) { $('fps').textContent = Math.round(fpsN / fpsAcc); fpsAcc = fpsN = fpsT = 0; }
     requestAnimationFrame(frame);
