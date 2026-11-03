@@ -378,7 +378,6 @@ function main() {
     bLift.appendChild(rp); rp.addEventListener('animationend', () => rp.remove());
     toggleLift();
   });
-  const lbMM = $('lbMM'), lbState = $('lbState');
   let lbLast = '';
 
   // ---------------------------------------------------------------- materials: glass on the screens, coat on the wand
@@ -505,8 +504,6 @@ function main() {
       bLift.style.setProperty('--lp', lp.toFixed(3));
       bLift.classList.toggle('moving', moving); bLift.classList.toggle('down', liftDown); bLift.classList.toggle('up', !liftDown);
       bLift.classList.toggle('reading', liftDown && !moving);
-      lbMM.textContent = String(Math.round(lp * 30)).padStart(2, '0');
-      lbState.textContent = moving ? (liftDown ? 'Lowering' : 'Raising') : (liftDown ? 'Reading soil' : 'Ready');
     }
     fpsAcc += dt; fpsN++; fpsT += dt;
     if (fpsT > 0.5) { $('fps').textContent = Math.round(fpsN / fpsAcc); fpsAcc = fpsN = fpsT = 0; }

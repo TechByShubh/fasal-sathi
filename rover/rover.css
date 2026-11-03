@@ -158,9 +158,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* the lift button: a working miniature of the lift. The carriage, the probe, the screws and the
    readout all follow the real lift on the model, so the button shows what the rover is doing. */
-.hold { bottom: calc(var(--pad) * 0.9 + 74px); }
+.hold { bottom: calc(var(--pad) * 0.9 + 62px); }
 .ctl { align-items: stretch; }
-.ctl #bLift { --lp: 0; position: relative; display: flex; align-items: center; gap: 12px; padding: 6px 16px 6px 6px; min-width: 244px;
+.ctl #bLift { --lp: 0; position: relative; display: flex; align-items: center; gap: 11px; padding: 5px 18px 5px 5px; border-radius: 999px;
   overflow: hidden; isolation: isolate; text-align: left; color: #120c06; background: var(--saffron); border-color: var(--saffron);
   box-shadow: 0 0 0 1px rgba(255, 154, 46, .35), 0 0 26px -6px var(--saffron);
   transition: transform .4s var(--ease), box-shadow .4s var(--ease); animation: lbGlow 2.8s ease-in-out infinite; }
@@ -169,7 +169,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ctl #bLift:active { transform: translateY(0) scale(.98); }
 /* the carriage band slides down the button as the wand goes down */
 .lb-fill { position: absolute; left: 0; right: 0; top: 0; height: calc(var(--lp) * 100%); z-index: -1; pointer-events: none;
-  background: repeating-linear-gradient(-45deg, rgba(18, 12, 6, .13) 0 5px, transparent 5px 10px); border-bottom: 1.5px solid rgba(18, 12, 6, .55); }
+  background: repeating-linear-gradient(-45deg, rgba(18, 12, 6, .13) 0 5px, transparent 5px 10px); }
 #bLift.moving .lb-fill { animation: lbStripe .5s linear infinite; }
 @keyframes lbStripe { to { background-position: 14px 0; } }
 /* a light sweep every few seconds, so it reads as the thing to press */
@@ -178,7 +178,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   animation: lbSweep 4.2s var(--ease) infinite; mix-blend-mode: soft-light; }
 @keyframes lbSweep { 0%, 62% { background-position: 130% 0; } 100% { background-position: -50% 0; } }
 /* the window: a cut-through of the lift, twin screws, NEMA caps, carriage, wand, probe, soil */
-.lb-win { flex: none; width: 46px; height: 46px; background: #0d0f13; position: relative; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .6); }
+.lb-win { flex: none; width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: #0d0f13; position: relative; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .6); }
 .lb-win svg { width: 100%; height: 100%; display: block; overflow: hidden; }
 .lb-win .scr { stroke: #c9ccd1; stroke-width: 1.6; stroke-dasharray: 1.2 1.3; }
 #bLift.moving.down .lb-win .scr { animation: lbThread .35s linear infinite; }
@@ -196,15 +196,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 #bLift.reading .lb-win .ring.r2 { animation-delay: .5s; } #bLift.reading .lb-win .ring.r3 { animation-delay: 1s; }
 @keyframes lbRing { 0% { transform: scale(.3); opacity: .95; } 100% { transform: scale(2.4); opacity: 0; } }
 /* the wand's own status light, top right: green ready, blue blinking while moving, green blinking while it reads */
-.lb-led { position: absolute; right: 7px; top: 7px; width: 6px; height: 6px; background: #1c7a2a; box-shadow: 0 0 0 1px rgba(18, 12, 6, .5); }
+.lb-led { position: absolute; right: 9px; top: 50%; margin-top: -2.5px; width: 5px; height: 5px; border-radius: 50%; background: #1c7a2a; box-shadow: 0 0 0 1px rgba(18, 12, 6, .5); }
 #bLift.moving .lb-led { background: #4fa3ff; box-shadow: 0 0 8px #4fa3ff; animation: blink .4s steps(1) infinite; }
 #bLift.reading .lb-led { background: #52e05a; box-shadow: 0 0 8px #52e05a; animation: blink .9s steps(1) infinite; }
 .lb-txt { display: flex; flex-direction: column; gap: 4px; line-height: 1; }
-.lb-txt b { font: 700 12.5px 'JB', monospace; letter-spacing: .09em; text-transform: uppercase; }
+.lb-txt b { font: 700 11.5px 'JB', monospace; padding-right: 8px; letter-spacing: .09em; text-transform: uppercase; }
 .lb-txt em { font: 500 9.5px 'JB', monospace; font-style: normal; letter-spacing: .08em; text-transform: uppercase; color: rgba(18, 12, 6, .72); white-space: nowrap; }
 .lb-txt em i { font-style: normal; display: inline-block; min-width: 2ch; color: #120c06; font-weight: 700; }
 /* the press itself sends a pulse out from where you clicked */
-.lb-ripple { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 1.5px solid #120c06; pointer-events: none; z-index: 3;
+.lb-ripple { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 1.5px solid #120c06; border-radius: 50%; pointer-events: none; z-index: 3;
   animation: lbRipple .7s var(--ease) forwards; }
 @keyframes lbRipple { to { transform: scale(18); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { #bLift, #bLift::after, .lb-fill, .lb-win * { animation: none !important; } }
