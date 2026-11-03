@@ -392,7 +392,13 @@ function main() {
   function upgrade(m) {
     if (upgraded.has(m)) return upgraded.get(m);
     let n = m; const name = m.name || '';
-    if (/^(TFT|OLED|Voltmeter)$/.test(name)) n = physical(m, { roughness: 0.04, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.015, emissiveIntensity: 1.35, envMapIntensity: 1.9 });
+    // the wand's screens: lit only by their own picture (no painted copy under the studio lights, no tone-map fade),
+    // with a thin, dim glass so a reflection never washes them white from a distance
+    if (/^(TFT|OLED)$/.test(name)) {
+      n = physical(m, { roughness: 0.2, metalness: 0, clearcoat: 0.45, clearcoatRoughness: 0.08, emissiveIntensity: 1.0, envMapIntensity: 0.3 });
+      n.map = null; n.color.setRGB(0, 0, 0); n.toneMapped = false;
+    }
+    else if (/^Voltmeter$/.test(name)) n = physical(m, { roughness: 0.04, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.015, emissiveIntensity: 1.35, envMapIntensity: 1.9 });
     else if (name === 'Wand_Cobalt') n = physical(m, { roughness: 0.3, clearcoat: 0.9, clearcoatRoughness: 0.06, envMapIntensity: 1.25 });
     else if (/^(GlossBlack|LensGlass|Solar)$/.test(name)) n = physical(m, { roughness: 0.06, clearcoat: 1, clearcoatRoughness: 0.02, envMapIntensity: 1.7 });
     else if (name === 'PETG_Clear') n = physical(m, { transmission: 0.95, thickness: 0.002, roughness: 0.07, ior: 1.5, envMapIntensity: 1.5 });
