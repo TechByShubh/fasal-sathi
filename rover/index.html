@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fasal Sathi Rover</title>
+<meta name="description" content="The Fasal Sathi soil wand on wheels. An interactive 3D model by Team Sanketra.">
+<meta name="theme-color" content="#07080a">
+<link rel="icon" href="../img/favicon.png">
+<link rel="preload" href="../fonts/Syne.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="rover.css">
+<script>
+  // phones are not supported: the model is heavy and the layout needs a big screen
+  (function () {
+    var ua = navigator.userAgent || '';
+    var shortSide = Math.min(screen.width, screen.height);
+    var phoneUA = /iPhone|iPod|Windows Phone|Android.+Mobile|Mobile.+Firefox|BlackBerry|Opera Mini/i.test(ua);
+    var coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+    window.__PHONE__ = phoneUA || (coarse && shortSide < 600);
+    if (window.__PHONE__) document.documentElement.classList.add('is-phone');
+  })();
+</script>
+<script type="importmap">{ "imports": { "three": "../vendor/three/three.module.min.js", "three/addons/": "../vendor/three/addons/" } }</script>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-in">
+    <div class="mono dim">Fasal Sathi Rover · फसल साथी</div>
+    <h1>Open this on a<br><em>laptop or tablet.</em></h1>
+    <p>The rover is a full 3D model you can turn and zoom. It needs a bigger screen than a phone to run smoothly and to show properly.</p>
+    <div class="mono gate-url" id="gateUrl"></div>
+  </div>
+</div>
+
+<div id="loader">
+  <div class="ld-in">
+    <div class="mono dim">Loading the model</div>
+    <div class="ld-num" id="ldNum">0</div>
+    <div class="ld-bar"><i id="ldBar"></i></div>
+    <div class="mono dim" id="ldTxt">289 parts · 47 materials</div>
+  </div>
+</div>
+
+<canvas id="stage"></canvas>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<!-- viewfinder frame -->
+<div class="vf"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+
+<header class="top">
+  <div class="brand mono"><span class="dot"></span>Team Sanketra · Bharat Innovation Challenge 2.0</div>
+  <div class="mono dim rec"><span class="red"></span>Live 3D · <span id="fps">--</span> fps</div>
+</header>
+
+<section class="intro">
+  <div class="kick mono">Design model · Soil wand on wheels</div>
+  <h1 class="title">Fasal<br>Sathi <span class="ro">Rover</span></h1>
+  <div class="hi">फसल साथी <span>· रोवर</span></div>
+  <p class="lede">The soil wand, now on wheels. It drives the field, lowers the wand to read the soil, spreads lime or gypsum only where the soil needs it, and keeps watch over the crop.</p>
+</section>
+
+<nav class="systems" id="systems">
+  <div class="mono dim lab">Look closer</div>
+  <button data-sys="wand"><b>Uno Q</b>Wand</button>
+  <button data-sys="lift"><b>NEMA17</b>Lift</button>
+  <button data-sys="spread"><b>pH</b>Spreader</button>
+  <button data-sys="sense"><b>HC-SR04</b>Sensors</button>
+  <button data-sys="drive"><b>4WD</b>Drive</button>
+  <button data-sys="brain"><b>ESP32</b>Control</button>
+</nav>
+
+<aside class="card" id="card">
+  <div class="mono card-kick" id="cardKick">Overview</div>
+  <h2 id="cardTitle">One wand. Every corner of the field.</h2>
+  <p id="cardText">Pick a system on the left, or click any part of the rover.</p>
+  <div class="spec mono" id="cardSpec"></div>
+</aside>
+
+<div class="hover mono" id="hover"></div>
+
+<footer class="hud mono">
+  <div class="read">
+    <span>Yaw <b id="hYaw">000</b>°</span>
+    <span>Pitch <b id="hPitch">00</b>°</span>
+    <span>Zoom <b id="hZoom">100</b>%</span>
+    <span>Lift <b id="hLift">UP</b></span>
+  </div>
+  <div class="ctl">
+    <button id="bLift" class="act">Lower the wand</button>
+    <button id="bSpin">Auto-spin</button>
+    <button id="bReset">Reset view</button>
+  </div>
+  <div class="hint dim">Drag to turn · scroll to zoom · click a part</div>
+</footer>
+
+<div class="note mono dim">Design model. The built rover may differ in detail.</div>
+
+<script type="module" src="rover.js"></script>
+</body>
+</html>
