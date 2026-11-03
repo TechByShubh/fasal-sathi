@@ -89,8 +89,25 @@
     <span>Lift <b id="hLift">UP</b></span>
   </div>
   <div class="ctl">
-    <button id="bLift" class="act">Lower the wand</button>
-    <button id="bSpin">Auto-spin</button>
+    <button id="bLift" class="act" aria-label="Lower the wand">
+      <span class="lb-fill"></span>
+      <span class="lb-win"><svg viewBox="0 0 46 46" aria-hidden="true">
+        <rect class="nema" x="3" y="1" width="8" height="5"/><rect class="nema" x="35" y="1" width="8" height="5"/>
+        <path class="scr" d="M7 6v28M39 6v28"/>
+        <g class="car">
+          <rect class="carb" x="4" y="15" width="38" height="3"/>
+          <rect class="body" x="16" y="3" width="14" height="22" rx="2"/>
+          <rect class="band" x="16" y="9" width="14" height="2"/><rect class="tft" x="19" y="13" width="8" height="5"/>
+          <path class="prong" d="M20 25v8M26 25v8"/>
+        </g>
+        <path class="grass" d="M2 36l1-3M9 36l1.5-3M14 36l-1-3M33 36l1-3M38 36l-1-3M44 36l1-3"/>
+        <rect class="soil" x="0" y="36" width="46" height="10"/>
+        <rect class="grain" x="5" y="39" width="2" height="2"/><rect class="grain" x="15" y="42" width="2" height="2"/><rect class="grain" x="31" y="40" width="2" height="2"/><rect class="grain" x="40" y="43" width="2" height="2"/>
+        <ellipse class="ring r1" cx="23" cy="40" rx="5" ry="2"/><ellipse class="ring r2" cx="23" cy="40" rx="5" ry="2"/><ellipse class="ring r3" cx="23" cy="40" rx="5" ry="2"/>
+      </svg></span>
+      <span class="lb-txt"><b id="bLiftT">Lower the wand</b><em><i id="lbMM">00</i> / 30 mm · <span id="lbState">Ready</span></em></span>
+      <span class="lb-led"></span>
+    </button>
     <button id="bReset">Reset view</button>
   </div>
   <div class="hint dim">Drag to turn · scroll in to zoom, back to reset · tap a part</div>

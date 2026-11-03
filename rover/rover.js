@@ -227,8 +227,6 @@ function main() {
 
   document.querySelectorAll('.systems button').forEach((b) => b.addEventListener('click', () => focus(current === b.dataset.sys ? 'overview' : b.dataset.sys)));
   $('bReset').addEventListener('click', () => focus('overview'));
-  const bSpin = $('bSpin'); bSpin.classList.add('on');
-  bSpin.addEventListener('click', () => { autoSpin = !autoSpin; bSpin.classList.toggle('on', autoSpin); });
 
   // ---------------------------------------------------------------- picking, part focus, highlight
   const raycaster = new THREE.Raycaster(); const ndc = new THREE.Vector2();
@@ -370,10 +368,18 @@ function main() {
     liftDown = !liftDown;
     lift.from = lift.y; lift.to = liftDown ? -TRAVEL : 0; lift.t0 = performance.now();
     lift.dur = 600 + 1900 * Math.abs(lift.to - lift.from) / TRAVEL;     // 2.5 s for the full 30 mm
-    bLift.textContent = liftDown ? 'Raise the wand' : 'Lower the wand';
+    $('bLiftT').textContent = liftDown ? 'Raise the wand' : 'Lower the wand';
+    bLift.setAttribute('aria-label', $('bLiftT').textContent);
     if (liftDown && current === 'overview') focus('lift');
   }
-  bLift.addEventListener('click', toggleLift);
+  bLift.addEventListener('click', (e) => {
+    const r = bLift.getBoundingClientRect(), rp = document.createElement('span');
+    rp.className = 'lb-ripple'; rp.style.left = (e.clientX - r.left) + 'px'; rp.style.top = (e.clientY - r.top) + 'px';
+    bLift.appendChild(rp); rp.addEventListener('animationend', () => rp.remove());
+    toggleLift();
+  });
+  const lbMM = $('lbMM'), lbState = $('lbState');
+  let lbLast = '';
 
   // ---------------------------------------------------------------- materials: glass on the screens, coat on the wand
   const upgraded = new Map();
@@ -491,6 +497,17 @@ function main() {
     $('hPitch').textContent = String(Math.round(cam.pitch * 180 / Math.PI)).padStart(2, '0');
     $('hZoom').textContent = Math.round(100 * SYS[current].view.dist / cam.dist);
     $('hLift').textContent = lift.t0 >= 0 ? 'MOVING' : (liftDown ? 'READING' : 'UP');
+    // the lift button mirrors the real lift
+    const lp = -lift.y / TRAVEL, moving = lift.t0 >= 0;
+    const lbKey = lp.toFixed(3) + moving + liftDown;
+    if (lbKey !== lbLast) {
+      lbLast = lbKey;
+      bLift.style.setProperty('--lp', lp.toFixed(3));
+      bLift.classList.toggle('moving', moving); bLift.classList.toggle('down', liftDown); bLift.classList.toggle('up', !liftDown);
+      bLift.classList.toggle('reading', liftDown && !moving);
+      lbMM.textContent = String(Math.round(lp * 30)).padStart(2, '0');
+      lbState.textContent = moving ? (liftDown ? 'Lowering' : 'Raising') : (liftDown ? 'Reading soil' : 'Ready');
+    }
     fpsAcc += dt; fpsN++; fpsT += dt;
     if (fpsT > 0.5) { $('fps').textContent = Math.round(fpsN / fpsAcc); fpsAcc = fpsN = fpsT = 0; }
     requestAnimationFrame(frame);
