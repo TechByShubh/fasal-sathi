@@ -214,8 +214,12 @@ function main() {
     const s = hold.snap; hold = null;
     unhighlight();
     holdEl.classList.remove('on');
-    // spring all the way home: the opening view (or the system you were looking at), not wherever the spin had got to
-    if (springBack) flyTo(viewOf(current), 'bounce');
+    // spring all the way home: always the exact view the page opens with
+    if (springBack) {
+      current = 'overview';
+      document.querySelectorAll('.systems button').forEach((b) => b.classList.remove('on'));
+      flyTo(viewOf('overview'), 'bounce');
+    }
     document.body.classList.toggle('focused', current !== 'overview');
     showSystem(current);
     lastInput = performance.now();
